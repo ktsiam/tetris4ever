@@ -17,6 +17,9 @@ SPECIFICATIONS:
     Makefile requires:
        - clang++ compiler
        - at least c++11
+    
+    Program requires:
+       - /bin/stty executable
 
 TETRIS POSITION EVALUATION:    
 
