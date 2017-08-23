@@ -1,0 +1,71 @@
+######################################################
+FOR INFO RUN EXECUTABLE WITHOUT PARAMETERS
+
+For any comments, mail to : ktsiampouris@gmail.com
+
+Feel free to redistribute or modify this,
+referring to the author of the original project.
+
+I hope you find it entertaining! :)
+
+SPECIFICATIONS:
+
+    This program has been run and tested on:
+       - MacOS 10.12.6
+       - Red Hat Linux release 7.4
+
+    Makefile requires:
+       - clang++ compiler
+       - at least c++11
+
+TETRIS POSITION EVALUATION:    
+
+    Evaluation parameter indices were found through a
+    statistical analysis of depth-1 games.
+
+    The result of the best combination can be found below.
+
+    Each point represents the range of lines cleared 
+    in a depth-1 tetris game.
+
+    Depth-2 AI tends to score ~10 times better than depth-1
+    Depth-3 AI never loses
+
+depth      : 1
+parameters : 7-7-4-10
+(squares cleared, hole count, avg height, variance)
+
+## top and bottom 10% are excluded ##
+                                               +/- 6
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII             ( ~51 )
+IIIIIIIIIIIIIIIIIIIIIIIII                     ( ~64 )
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII              ( ~77 )
+IIIIIIIIIIIIIIIIIIIIIIIIIIII                  ( ~90 )
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII           ( ~103 )
+IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII              ( ~116 )
+IIIIIIIIIIIIIIIIIIIIIIIIIII                   ( ~129 )
+IIIIIIIIIIIIIIIIII                            ( ~142 )
+IIIIIIIIIIIIIIIIIIIIIIIII                     ( ~155 )
+IIIIIIIIIIIIIIII                              ( ~168 )
+IIIIIIIIIIIIIII                               ( ~181 )
+IIIIIIIIIIII                                  ( ~194 )
+IIIIIIIIII                                    ( ~207 )
+IIIIIIIIIIIIII                                ( ~220 )
+IIIIIIIIII                                    ( ~233 )
+IIIIIIII                                      ( ~246 )
+IIIIIIIIIII                                   ( ~259 )
+IIIIIIIII                                     ( ~272 )
+IIIIIIIIIIIII                                 ( ~285 )
+IIIIII                                        ( ~298 )
+IIIIIIIIIIIII                                 ( ~311 )
+IIIII                                         ( ~324 )
+IIIII                                         ( ~337 )
+IIIII                                         ( ~350 )
+IIIIIII                                       ( ~363 )
+III                                           ( ~376 )
+
+SAMPLE SIZE : 417 ( -52 min, -52 max ) 
+AVERAGE SCORE : 157.83
+STANDARD DEVIATION : 86.7969
+
+######## Author: Kostas Tsiampouris Aug-2017 #########
