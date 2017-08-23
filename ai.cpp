@@ -5,7 +5,6 @@
 #include <cassert>   //assert()
 #include <limits>    //std::numeric_limits
 #include <thread>    //std::thread
-#include <future>    //std::async
 
 using EVAL_SUM = float;
 
@@ -14,9 +13,8 @@ using EVAL_SUM = float;
 
 AI::AI() : Board()
 {
-        this->curr_eval = evaluate();
         assert(RES_NUM >= DEPTH-1);
-        curr_eval = evaluate();
+        this->curr_eval = evaluate();
 }
 
 void AI::auto_play()
@@ -34,10 +32,13 @@ void AI::auto_play()
                 });
 
         MOVE choice;
-        while(true){            
+        while(true){
+                //choosing move
                 choice = choose();
                 usleep(WAIT_TIME);
                 curr_eval = evaluate();
+                
+                //applying it
                 make_move(choice);
 
                 //allowing for direct keyboard input
@@ -59,6 +60,7 @@ MOVE AI::choose()
         EVAL_SUM temp;
         MOVE optimal;
 
+        //recurses through all possible future sequences
         for (MOVE m = 0; m < (X_MAX-1)*ROTAT; ++m){
                 temp = search(m, DEPTH-1);
                 if (temp > max){
@@ -66,6 +68,7 @@ MOVE AI::choose()
                         optimal = m;
                 }
         }
+        //returns best first move
         return optimal;
 }
 
@@ -76,17 +79,17 @@ EVAL_SUM AI::search(MOVE move, small depth)
         EVAL_SUM temp;
         MOVE optimal;
 
-        //if game_over flag
+        //if game_over flag, return bad evaluation
         if (Ch.piece_id == PIECE_NUM)
                 return std::numeric_limits<EVAL_SUM>::lowest();        
         
-        //max depth reached
+        //if max depth reached, return evaluation of position
         if (depth == 0){
                 max = evaluate().sum();
                 goto ret;
         }
         else
-                //max depth not reached yet
+                //if max depth not reached yet, recurse deeper
                 for (MOVE m = 0; m < (X_MAX-1)*ROTAT; ++m){
                         temp = search(m, depth-1);        
                         if (temp > max){
