@@ -25,6 +25,7 @@ TETRIS POSITION EVALUATION:
 
     Evaluation parameter indices were found through a
     statistical analysis of depth-1 games.
+    Depth tells how many moves deep-forward the program sees.
 
     The result of the best combination can be found below.
 
