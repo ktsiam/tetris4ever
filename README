@@ -17,25 +17,21 @@ SPECIFICATIONS:
     Makefile requires:
        - clang++ compiler
        - at least c++11
-    
-    Program requires:
-       - /bin/stty executable
 
-TETRIS POSITION EVALUATION:    
+TETRIS POSITION EVALUATION:
 
     Evaluation parameter indices were found through a
     statistical analysis of depth-1 games.
-    Depth tells how many moves deep-forward the program sees.
 
     The result of the best combination can be found below.
 
-    Each point represents the range of lines cleared 
+    Each point represents the range of lines cleared
     in a depth-1 tetris game.
 
     Depth-2 AI tends to score ~10 times better than depth-1
-    Depth-3 AI never loses
+    Depth-3 and Depth-4 AI never lose
 
-depth      : 1
+Depth      : 1
 parameters : 7-7-4-10
 (squares cleared, hole count, avg height, variance)
 
@@ -68,8 +64,8 @@ IIIII                                         ( ~350 )
 IIIIIII                                       ( ~363 )
 III                                           ( ~376 )
 
-SAMPLE SIZE : 417 ( -52 min, -52 max ) 
-AVERAGE SCORE : 157.83
+SAMPLE SIZE : 417 ( -52 min, -52 max )
+AVERAGE SCORE : 157.83 (lines cleared)
 STANDARD DEVIATION : 86.7969
 
 ######## Author: Kostas Tsiampouris Aug-2017 #########
