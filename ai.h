@@ -10,7 +10,7 @@ typedef uint8_t MOVE;
 typedef float   EVAL_SUM;
 
 
-const uint WAIT_TIME = MICRO_IN_SEC*0.0; //time between frames
+const uint WAIT_TIME = MICRO_IN_SEC*0.02; //time between frames
 const small ROTAT    = 4;                 //number of rotations
 
 //Moves deep the AI thinks (defined in main.cpp)
