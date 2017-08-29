@@ -1,7 +1,7 @@
 #Author: Kostas Tsiampouris, Aug-2017
 
 CXX      = clang++
-CXXFLAGS = -std=c++11 -O3 -Wall -Wextra #-Weverything
+CXXFLAGS = -std=c++11 -O3
 LDLFLAGS = -pthread -lpthread
 
 all: tetris4ever
