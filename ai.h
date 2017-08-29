@@ -6,13 +6,15 @@
 #include "board.h"
 #include "evaluation.h"
 
-using MOVE = usmall;
+typedef uint8_t MOVE;
+typedef float   EVAL_SUM;
 
-const uint WAIT_TIME = MICRO_IN_SEC*0.02; //time between frames
+
+const uint WAIT_TIME = MICRO_IN_SEC*0.0; //time between frames
 const small ROTAT    = 4;                 //number of rotations
 
 //Moves deep the AI thinks (defined in main.cpp)
-extern usmall DEPTH;
+extern small DEPTH;
 
 
 //Platform that allows automatic play (inheriting from Board)
@@ -20,11 +22,11 @@ class AI : private Board{
 public:
 
         //MAIN FUNCTIONS
-        AI();               //Constructor
-        void auto_play();   //Machine-played tetris
+        AI();                            //Constructor
+        [[noreturn]] void auto_play();   //Machine-played tetris
 
 private:
-        
+
         //VARIABLE
 
         //holds the current position's evaluation
@@ -34,17 +36,18 @@ private:
         //HELPER FUNCTIONS
 
         //move selecting functions
-        MOVE choose();                  //returns best move
-        float search(MOVE, small depth);//recurses in all possibilities
+        inline MOVE choose();                                  //returns best move
+        inline EVAL_SUM search(const MOVE, const small depth); //recurses all possibilities
+        inline bool redundant(const MOVE);                     //checks if move redundant
 
         //move functions
-        Change testMove(MOVE);   //makes a reversable move
-        void cancelMove(Change); //cancels the move
-        void make_move(MOVE);    //makes the final move & animation
-                
+        inline Change testMove(const MOVE);   //makes a reversable move
+        inline void cancelMove(const Change); //cancels the move
+               void make_move(const MOVE);    //makes the final move & animation
+
         //miscellaneous
-        Evaluation evaluate();   //returns evaluation of curr position
-        void wait();             //sleeps for WAIT_TIME
+        inline Evaluation evaluate() const;   //returns evaluation of curr position
+        inline void wait() const;             //sleeps for WAIT_TIME
 
 };
 

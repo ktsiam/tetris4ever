@@ -9,21 +9,21 @@
 
 const  uint MICRO_IN_SEC = 1000000;         //microseconds in a sec (usleep)
 const  uint END_GAME_TIME = MICRO_IN_SEC/50;//speed of ending animation
-const  usmall RES_NUM = 6;                  //number of pieces in reserve
+const  small RES_NUM = 6;                  //number of pieces in reserve
 
 //board dimensions and speed (defined in main.cpp)
-extern usmall Y_MAX;
-extern usmall X_MAX;
-extern usmall FALL_SPEED;
+extern small Y_MAX;
+extern small X_MAX;
+extern uint  FALL_SPEED;
 
 
 //Keeps Changes to board made by a move (allows reversing a move)
 struct Change{
 
         //Constructors
-        Change() = default;
-        Change(std::vector<small> a, std::vector<Coord> b, small id):
-        linesCleared(a), boxesAdded(b), piece_id(id) {};
+               Change() = default;
+        inline Change(const std::vector<small> a, const std::vector<Coord> b, const small id):
+                linesCleared(a), boxesAdded(b), piece_id(id) {}
 
         std::vector<small> linesCleared; //vector of cleared lines
         std::vector<Coord> boxesAdded;   //vector of boxes added
@@ -36,18 +36,18 @@ class Board{
 public:
 
         //MAIN FUNCTIONS
-        Board();      //Constructor        
+        Board();      //Constructor
         ~Board();     //Destructor
         void play();  //User-played tetris
 
-protected:   
-        
+protected:
+
         //VARIABLES
 
         //board & piece
-        bool **board;     
+        bool **board;
         Piece *piece;
-        
+
         //piece reserve and similar
         small *reserve, *perm, index;
 
@@ -55,35 +55,35 @@ protected:
         uint score;
 
         //movement lock for threads
-        bool locked;
+        volatile bool locked;
 
 
         //HELPER FUNCTIONS
 
         //move functions (they return if possible)
-        bool down();  
+        bool down();
         bool right();
         bool left();
         bool rotate();
 
         //composite move functions
-        bool downPlus(); //also appends, removes lines, checks end_game
-        void control();  //user controls movement
-        Change append(); //appends piece, returns change in board
-        void drop();     //drops and appends piece
-        void fall();     //causes piece to fall slowly
+        bool downPlus();              //also appends, removes lines, checks end_game
+        [[noreturn]] void control();  //user controls movement
+        [[noreturn]] void fall();     //causes piece to fall slowly
+        Change append();              //appends piece, returns change in board
+        void drop();                  //drops and appends piece
 
         //reserve-piece functions
-        void shufflePerm(); //permutes piece-sack
-        small nextPiece();  //generates new reserve piece
-        bool newPiece(bool);//replaces current piece, returns if game over
+        inline void shufflePerm();        //permutes piece-sack
+        inline small nextPiece();         //generates new reserve piece
+               bool newPiece(const bool); //replaces current piece, returns if game over
         //parameter tells if to refresh last piece in reserve
 
         //miscellaneous
-        void game_over();                 //end-game animation        
-        std::vector<small> check_lines(); //clears lines, returns which
-        void kill_line(small);            //kills a line (parameter)
-        void print(); //Prints board
+        [[noreturn]] void game_over();             //end-game animation
+               std::vector<small> check_lines();   //clears lines, returns which
+        inline void kill_line(const small);        //kills a line (parameter)
+               void print() const;                 //Prints board
 };
 
 #endif //BOARD_H_

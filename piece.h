@@ -5,14 +5,13 @@
 
 #include <cstdint> //int8_t (small), uint8_t (usmall)
 
-using small  = int8_t;
-using usmall = uint8_t;
+typedef int8_t small;
 
 //stores coordinates
 struct Coord{
 
         Coord() = default;
-        Coord(small a, small b) : x(a), y(b) {};
+        inline Coord(small a, small b) : x(a), y(b) {}
         small x, y;
 };
 
@@ -25,7 +24,7 @@ const small INIT_Y = 0;
 const Coord INIT_COORD(INIT_X, INIT_Y);
 const Coord PIECE_LIB[PIECE_NUM][4] = //piece shape
 {{Coord(2,0), Coord(0,1), Coord(1,1), Coord(2,1)},
- {Coord(0,0), Coord(1,0), Coord(2,0), Coord(2,1)}, 
+ {Coord(0,0), Coord(1,0), Coord(2,0), Coord(2,1)},
  {Coord(1,0), Coord(2,0), Coord(0,1), Coord(1,1)},
  {Coord(1,0), Coord(0,1), Coord(1,1), Coord(1,2)},
  {Coord(0,0), Coord(1,0), Coord(1,1), Coord(2,1)},
@@ -35,21 +34,21 @@ const Coord PIECE_LIB[PIECE_NUM][4] = //piece shape
 
 //stores block-piece attributes
 struct Piece{
-        
+
         //constructor
-        Piece(small init){
-                this->ID = init;        
+        inline Piece(small init){
+                this->ID = init;
                 this->size = PIECE_SIZE[ID];
                 this->pieceCoord = INIT_COORD;
-                         
+
                 for (small i = 0; i < BOX_PER_PIECE; ++i)
                         box[i] = PIECE_LIB[ID][i];
         }
 
-        Coord box[BOX_PER_PIECE];  //coordinates of boxes        
+        Coord box[BOX_PER_PIECE];  //coordinates of boxes
         Coord pieceCoord;          //position in board
-        usmall size;                //max(x,y) size of piece
-        usmall ID;                  //piece ID
+        small size;                //max(x,y) size of piece
+        small ID;                  //piece ID
 };
 
 //only used for printing at Board::print()
@@ -57,32 +56,32 @@ const bool PRINTABLE_PIECE[PIECE_NUM][4][4] = {{{0, 0, 1, 0},
                                                 {1, 1, 1, 0},
                                                 {0, 0, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{1, 1, 1, 0},
                                                 {0, 0, 1, 0},
                                                 {0, 0, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{0, 1, 1, 0},
                                                 {1, 1, 0, 0},
                                                 {0, 0, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{0, 1, 0, 0},
                                                 {1, 1, 0, 0},
                                                 {0, 1, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{1, 1, 0, 0},
                                                 {0, 1, 1, 0},
                                                 {0, 0, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{1, 1, 0, 0},
                                                 {1, 1, 0, 0},
                                                 {0, 0, 0, 0},
                                                 {0, 0, 0, 0}},
-                                               
+
                                                {{0, 0, 0, 0},
                                                 {1, 1, 1, 1},
                                                 {0, 0, 0, 0},

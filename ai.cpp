@@ -6,45 +6,44 @@
 #include <limits>    //std::numeric_limits
 #include <thread>    //std::thread
 
-using EVAL_SUM = float;
-
 
 //MAIN FUNCTIONS
 
 AI::AI() : Board()
 {
         assert(RES_NUM >= DEPTH-1);
-        this->curr_eval = evaluate();
+        std::cout << "PLEASE WAIT...\n";
 }
 
 void AI::auto_play()
 {
+        bool *quit = new bool(false);
+
         //creating a thread to allow user to quit using 'Q'
-        std::thread quitThread([](){
-                        char c; 
+        std::thread quitThread([](bool *quit){
+                        char c;
                         while(1){
                                 std::cin >> c;
-                                if(c == 'q'){
-                                        system("/bin/stty cooked");
-                                        exit(0);
-                                }
+                                if (c == 'q' || c == 'Q')
+                                        *quit = true;
                         }
-                });
+                }, quit);
 
         MOVE choice;
-        while(true){
+        while(!*quit){
                 //choosing move
                 choice = choose();
                 usleep(WAIT_TIME);
-                curr_eval = evaluate();
-                
-                //applying it
+
+                //making move
                 make_move(choice);
 
                 //allowing for direct keyboard input
                 system("/bin/stty raw");
                 system("/bin/stty cooked");
         }
+        //delete this;
+        exit(0);                
         quitThread.join();
 }
 
@@ -55,53 +54,69 @@ void AI::auto_play()
 //MOVE SELECTING FUNCTIONS
 
 MOVE AI::choose()
-{        
+{
         EVAL_SUM max = -std::numeric_limits<float>::infinity();
         EVAL_SUM temp;
         MOVE optimal;
 
-        //recurses through all possible future sequences
-        for (MOVE m = 0; m < (X_MAX-1)*ROTAT; ++m){
+        //iterating through all possible moves
+        for (MOVE m = 0; m < X_MAX*ROTAT; ++m){
                 temp = search(m, DEPTH-1);
                 if (temp > max){
                         max = temp;
                         optimal = m;
                 }
         }
-        //returns best first move
+        //returning best
         return optimal;
 }
 
-EVAL_SUM AI::search(MOVE move, small depth)
+inline EVAL_SUM AI::search(const MOVE move, const small depth)
 {
+        //checking if move is redundant
+        if (redundant(move))
+                return std::numeric_limits<EVAL_SUM>::lowest();
+
         Change Ch = testMove(move);
         EVAL_SUM max = -std::numeric_limits<EVAL_SUM>::infinity();
         EVAL_SUM temp;
-        MOVE optimal;
 
-        //if game_over flag, return bad evaluation
+        //if already calculated move flag, return bad evaluation
+        if (Ch.piece_id == PIECE_NUM + 1)
+                return std::numeric_limits<EVAL_SUM>::lowest();
+
+        //if game_over flag, it returns bad evaluation
         if (Ch.piece_id == PIECE_NUM)
-                return std::numeric_limits<EVAL_SUM>::lowest();        
-        
-        //if max depth reached, return evaluation of position
+                return std::numeric_limits<EVAL_SUM>::lowest();
+
+        //if max depth reached, it returns evaluation
         if (depth == 0){
                 max = evaluate().sum();
                 goto ret;
         }
         else
-                //if max depth not reached yet, recurse deeper
-                for (MOVE m = 0; m < (X_MAX-1)*ROTAT; ++m){
-                        temp = search(m, depth-1);        
+                //if max depth not reached yet, it recurses deeper
+                for (MOVE m = 0; m < X_MAX*ROTAT; ++m){
+                        temp = search(m, depth-1);
                         if (temp > max){
                                 max = temp;
-                                optimal = m;                        
                         }
                 }
-        
-ret:    
+ret:
         cancelMove(Ch);
         return max;
 }
+
+inline bool AI::redundant(MOVE move)
+{
+        return
+                (piece->ID == 2 && (move%ROTAT == 2 || move%ROTAT == 3)) ||
+                (piece->ID == 4 && (move%ROTAT == 2 || move%ROTAT == 3)) ||
+                (piece->ID == 5 && move % ROTAT != 0)                    ||
+                (piece->ID == 6 && (move%ROTAT == 2 || move%ROTAT == 3));
+
+}
+
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -109,70 +124,84 @@ ret:
 
 //MOVE FUNCTIONS
 
-Change AI::testMove(MOVE move)
+inline Change AI::testMove(const MOVE move)
 {
+        //to avoid calculating the same move
+        bool covered = false;
+
         for (MOVE i = 0; i < move%4; ++i)
-                rotate();                       
-        
+                rotate();
+
         while (left()){};
-        
+
         for (MOVE i = 0; i < move/4; ++i)
-                right();
+                if (!right())
+                        covered = true;
 
         while(down()){};
-        
+
         //store change
         Change Ch = append();
 
+        //if move already covered
+        if (covered){
+                newPiece(false);
+                cancelMove(Ch);
+                Ch.piece_id = PIECE_NUM+1; //flag that move covered
+        }
+
         //replace piece, without refreshing last reserve
-        if (!newPiece(false)){
+        else if (!newPiece(false)){
                 cancelMove(Ch);
                 Ch.piece_id = PIECE_NUM; //flag that game over
         }
+
+
         return Ch;
 }
 
-void AI::cancelMove(Change ch)
+inline void AI::cancelMove(const Change ch)
 {
         //reserve is put back to normal
         for (small i = RES_NUM-1; i >= 1; --i)
                 reserve[i] = reserve[i-1];
         reserve[0] = piece->ID;
-        
+
         //piece is replaced with previous one
         delete piece;
         piece = new Piece(ch.piece_id);
-        
-        //lines are added back        
+
+        //lines are added back
         for (auto it = ch.linesCleared.rbegin(); it != ch.linesCleared.rend(); ++it){
-                for (usmall x = 0; x < X_MAX; ++x){
-                        for (usmall y = 0; y < *it; ++y)
+                for (small x = 0; x < X_MAX; ++x){
+                        for (small y = 0; y < *it; ++y)
                                 board[x][y] = board[x][y+1];
                         board[x][*it] = 1;
                 }
                 --score;
         }
-        
+
         //piece is unappended
         for (auto it = ch.boxesAdded.begin(); it != ch.boxesAdded.end(); ++it)
                 board[it->x][it->y] = 0;
 }
 
-void AI::make_move(MOVE move)
+void AI::make_move(const MOVE move)
 {
+        curr_eval = evaluate();
         for (MOVE i = 0; i < move%4; ++i){
                 rotate();
                 print();
                 curr_eval.print();
                 wait();
         }
-        
+
         while (left()){
                 print();
                 curr_eval.print();
                 wait();
         }
-        
+
         for (MOVE i = 0; i < move/4; ++i)
                 if (right()){
                         print();
@@ -181,7 +210,7 @@ void AI::make_move(MOVE move)
                 }
         drop();
         print();
-        curr_eval.print();
+        evaluate().print();
         wait();
 }
 
@@ -191,44 +220,44 @@ void AI::make_move(MOVE move)
 
 //MISCELLANEOUS
 
-Evaluation AI::evaluate()
+inline Evaluation AI::evaluate() const
 {
         Evaluation ev;
 
         //adding square count
-        for (usmall x = 0; x < X_MAX; ++x)
-                for (usmall y = 0; y < Y_MAX; ++y)
+        for (small x = 0; x < X_MAX; ++x)
+                for (small y = 0; y < Y_MAX; ++y)
                         ev.sqCount += board[x][y];
-        
+
         //holes
         bool *mask = new bool[X_MAX];
-        for (usmall x = 0; x < X_MAX; ++x)
+        for (small x = 0; x < X_MAX; ++x)
                 mask[x] = false;
-        
-        for (usmall x = 0; x < X_MAX; ++x)
-                for (usmall y = 0; y < Y_MAX; ++y)
+
+        for (small x = 0; x < X_MAX; ++x)
+                for (small y = 0; y < Y_MAX; ++y)
                         if (!mask[x])
                                 mask[x] = board[x][y];
                         else
-                                ev.holes += (!board[x][y]);
-        
-        for (usmall x = 0; x < X_MAX; ++x)
-                for (usmall y = 0; y < Y_MAX; ++y)
+                                ev.holes += !board[x][y];
+
+        for (small x = 0; x < X_MAX; ++x)
+                for (small y = 0; y < Y_MAX; ++y)
                         ev.avgHeight += y * board[x][y];
         //avg height
         ev.avgHeight /= ev.sqCount;
-        
-        //creating mask
-        small *tops = new small[X_MAX];        
-        for (usmall x = 0; x < X_MAX; ++x){
+
+        //variance
+        small *tops = new small[X_MAX];
+        for (small x = 0; x < X_MAX; ++x){
                 tops[x] = Y_MAX - 1;
-                for (usmall y = 0; y < Y_MAX; ++y)
+                for (small y = 0; y < Y_MAX; ++y)
                         if (board[x][y]){
                                 tops[x] = y;
                                 break;
                         }
         }
-        for (usmall x = 0; x < X_MAX; ++x){
+        for (small x = 0; x < X_MAX; ++x){
                 float var = tops[x] - ev.avgHeight;
                 ev.variance += var*var;
         }
@@ -239,7 +268,7 @@ Evaluation AI::evaluate()
         return ev;
 }
 
-void AI::wait()
+inline void AI::wait() const
 {
         usleep(WAIT_TIME);
 }
