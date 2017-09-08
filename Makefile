@@ -5,7 +5,7 @@ CXXFLAGS = -std=c++11 -O3
 LDLFLAGS = -pthread -lpthread
 
 tetris4ever: main.o
-	${CXX} -o	tetris4ever	board.o	ai.o	main.o
+	${CXX} ${LDLFLAGS} -o	tetris4ever	board.o	ai.o	main.o
 
 main.o:  main.cpp ai.o board.o
 ai.o:	 ai.cpp ai.h evaluation.h board.o
