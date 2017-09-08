@@ -2,7 +2,7 @@
 
 CXX      = clang++
 CXXFLAGS = -std=c++11 -O3
-LDLFLAGS = -pthread -lpthread
+LDLFLAGS = -lpthread
 
 tetris4ever: main.o
 	${CXX} ${LDLFLAGS} -o	tetris4ever	board.o	ai.o	main.o
