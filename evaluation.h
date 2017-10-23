@@ -3,6 +3,8 @@
 #ifndef EVALUATION_H_
 #define EVALUATION_H_
 
+extern bool SHOW_EVAL;
+
 //Stores evaluation factors of a Board arrangement
 struct Evaluation
 {
@@ -29,6 +31,7 @@ struct Evaluation
 
         //prints detailed evaluation
         void print() const{
+                if (!SHOW_EVAL) return;
                 std::cout << "square count = " << (uint)sqCount << std::endl;
                 std::cout << "holes = " << (uint)holes << std::endl;
                 std::cout << "average height = " << Y_MAX - avgHeight << std::endl;

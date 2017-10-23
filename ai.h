@@ -10,12 +10,10 @@ typedef uint8_t MOVE;
 typedef float   EVAL_SUM;
 
 
-const uint WAIT_TIME = MICRO_IN_SEC*0.02; //time between frames
-const small ROTAT    = 4;                 //number of rotations
+const small ROTAT = 4; //number of rotations
 
-//Moves deep the AI thinks (defined in main.cpp)
-extern small DEPTH;
-
+extern small DEPTH;    //Moves deep the AI thinks (defined in main.cpp)
+extern uint WAIT_TIME; //time between frames
 
 //Platform that allows automatic play (inheriting from Board)
 class AI : private Board{

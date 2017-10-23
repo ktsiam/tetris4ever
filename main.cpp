@@ -4,9 +4,11 @@
 #include <cassert> //assert()
 
 uint FALL_SPEED = 5;
-small Y_MAX = 20; //height
-small X_MAX = 10; //width
-small DEPTH = 3;  //moves deep the AI thinks
+small Y_MAX = 20;       //height
+small X_MAX = 10;       //width
+small DEPTH = 3;        //moves deep the AI thinks
+uint WAIT_TIME = MICRO_IN_SEC*0.02;
+bool SHOW_EVAL = false; //shows full AI evaluation
 
 void help();                 //prints help menu
 bool setParams(int, char**); //sets parameters
@@ -39,6 +41,8 @@ void help()
                   << "   \t-h=$ : board height(5-)           default = 20\n"
                   << "   \t-w=$ : board width(8-20)          default = 10\n"
                   << "   \t-d=$ : AI depth(1-4)              default = 3\n"
+                  << "   \t-i   : disable AI move delay      default = 20ms\n"
+                  << "   \t-e   : print AI evaluation        default = disabled\n"
                   << "\n   MANUAL CONTROLS:\n   \tMOVE   : A-S-D\n   \tDROP   : W\n"
                   << "   \tROTATE : R\n\n   QUIT: Q\n"
                   << "\n##### By Kostas Tsiampouris, Tufts University, Aug-2017 #####\n"
@@ -75,6 +79,12 @@ bool setParams(int argc, char *argv[])
                                 DEPTH = atoi(&argv[i][3]);
                                 assert(1 <= DEPTH);
                                 assert(DEPTH <= 4);
+                                break;
+                        case 'i' :
+                                WAIT_TIME = 0;
+                                break;
+                        case 'e' :
+                                SHOW_EVAL = true;
                                 break;
                 }
         return manual;
