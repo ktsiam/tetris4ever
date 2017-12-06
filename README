@@ -68,4 +68,37 @@ SAMPLE SIZE : 417 ( -52 min, -52 max )
 AVERAGE SCORE : 157.83 (lines cleared)
 STANDARD DEVIATION : 86.7969
 
+SAMPLE AI GAME INTERFACE:
+-------------------------------------
+
+SCORE :: 212 :: !!!!
+_______________________
+|         o o o       |   o   
+|             o       |   o   
+|                     |   o o 
+|                     |       
+|                     | ------
+|                     |   o   
+|                     |   o o 
+|                     |     o 
+|                     |       
+|                     | ------
+|                     |   o   
+|                     | o o o 
+|                     |       
+|                     |       
+|                     | ------
+| x       x   x       |   o   
+| x x x x x x x   x   |   o   
+| x x x x x x x x x   |   o   
+| x   x x x x   x x   |   o   
+| x x x x x x x x x   | ------
+|IIIIIIIIIIIIIIIIIIIII|
+
+square count = 36          
+holes = 2
+average height = 2.69444
+variance = 2.74336
+total = -2.24211
+
 ######## Author: Kostas Tsiampouris Aug-2017 #########
