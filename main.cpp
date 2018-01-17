@@ -7,7 +7,7 @@ uint FALL_SPEED = 5;
 small Y_MAX = 20;       //height
 small X_MAX = 10;       //width
 small DEPTH = 3;        //moves deep the AI thinks
-uint WAIT_TIME = MICRO_IN_SEC*0.02;
+uint WAIT_TIME = MICRO_IN_SEC*0.05;
 bool SHOW_EVAL = false; //shows full AI evaluation
 
 void help();                 //prints help menu
