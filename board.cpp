@@ -232,9 +232,21 @@ Change Board::append()
 }
 
 void Board::drop()
-{
+{               
         locked = true;
-        while(downPlus()){};
+
+        int drop_count = Y_MAX;
+        for (small i = 0; i < BOX_PER_PIECE; ++i) {
+                int count = 0;
+                while(!board[piece->box[i].x + piece->pieceCoord.x]
+                      [piece->box[i].y + piece->pieceCoord.y + count + 1])
+                        ++count;
+                drop_count = std::min(drop_count, count);
+        }
+        
+        piece->pieceCoord.y += drop_count;
+        downPlus();
+
         locked = false;
 }
 
